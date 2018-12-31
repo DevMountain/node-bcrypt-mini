@@ -12,6 +12,12 @@ In this project we'll use a package called `bcrypt` to authenticate users. Bcryo
 
 ## Step 1
 
+### Summary
+
+In this step, setup a basic Express server
+
+### Instructions
+
 * Navigate to `server/index.js`
     * Begin by setting up a basic express server
     * This should include the following:
@@ -22,12 +28,6 @@ In this project we'll use a package called `bcrypt` to authenticate users. Bcryo
         * a test `get` endpoint that returns a `200` status
         * The `listen` method
     * Once your server is setup, test it with `postman` or your browser.
-
-### Summary
-
-
-### Instructions
-
 
 ### Solution
 
