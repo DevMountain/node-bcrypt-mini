@@ -12,6 +12,17 @@ In this project we'll use a package called `bcrypt` to authenticate users. Bcryo
 
 ## Step 1
 
+* Navigate to `server/index.js`
+    * Begin by setting up a basic express server
+    * This should include the following:
+        * Express
+        * Express-Session
+        * Dotenv
+        * BodyParser (Express' json parser);
+        * a test `get` endpoint that returns a `200` status
+        * The `listen` method
+    * Once your server is setup, test it with `postman` or your browser.
+
 ### Summary
 
 
@@ -19,6 +30,11 @@ In this project we'll use a package called `bcrypt` to authenticate users. Bcryo
 
 
 ### Solution
+
+
+## Black Diamond
+
+* Add a profile page that we're redirected to on login that uses the information from our logged in user.
 
 
 
