@@ -2,7 +2,7 @@
 
 # Project Summary
 
-In this project we'll use a package called `bcrypt` to authenticate users. Bcryot is a package based off the popular bcrypt hashing algorithm. It exposes several functions that we can use to salt, hash, and compare our passwords without exposing the users plain-text password.
+In this project we'll use a package called `bcrypt` to authenticate users. Bcrypt is a package based off the popular bcrypt hashing algorithm. It exposes several functions that we can use to salt, hash, and compare our passwords without exposing the users plain-text password.
 
 ## Setup
 
@@ -24,7 +24,8 @@ In this step, setup a basic Express server
         * Express
         * Express-Session
         * Dotenv
-        * BodyParser (Express' json parser);
+        * BodyParser (or Express' json parser);
+        * Massive
         * a test `get` endpoint that returns a `200` status
         * The `listen` method
     * Once your server is setup, test it with `postman` or your browser.
