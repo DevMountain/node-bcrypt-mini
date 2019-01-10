@@ -14,28 +14,12 @@ In this project we'll use a package called `bcrypt` to authenticate users. Bcryp
 
 ### Summary
 
-In this step, setup a basic Express server
+In this step, create your `/.env` file.
 
 ### Instructions
 
-* Navigate to `server/index.js`
-    * Begin by setting up a basic express server
-    * This should include the following:
-        * Express
-        * Express-Session
-        * Dotenv
-        * BodyParser (or Express' json parser);
-        * Massive
-        * a test `get` endpoint that returns a `200` status
-        * The `listen` method
-    * Once your server is setup, test it with `postman` or your browser.
 
 ### Solution
-
-
-## Black Diamond
-
-* Add a profile page that we're redirected to on login that uses the information from our logged in user.
 
 
 
@@ -45,7 +29,7 @@ If you see a problem or a typo, please fork, make the necessary changes, and cre
 
 ## Copyright
 
-© DevMountain LLC, 2018. Unauthorized use and/or duplication of this material without express and written permission from DevMountain, LLC is strictly prohibited. Excerpts and links may be used, provided that full and clear credit is given to DevMountain with appropriate and specific direction to the original content.
+© DevMountain LLC, 2019. Unauthorized use and/or duplication of this material without express and written permission from DevMountain, LLC is strictly prohibited. Excerpts and links may be used, provided that full and clear credit is given to DevMountain with appropriate and specific direction to the original content.
 
 <p align="center">
 <img src="https://s3.amazonaws.com/devmountain/readme-logo.png" width="250">
