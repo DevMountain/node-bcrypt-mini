@@ -449,6 +449,10 @@ app.listen(SERVER_PORT, () => {
 
 </details>
 
+## Summary
+
+You are now able to use form based, local authentication via bcrypt to have users signup, login, logout, and access their data. Authentication will allow your projects to be more flexible, dynamic, and engaging, and using bcrypt will help make sure that your users data is safe.
+
 ## Contributions
 
 If you see a problem or a typo, please fork, make the necessary changes, and create a pull request so we can review your changes and merge them into the master repo and branch.
