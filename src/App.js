@@ -13,12 +13,10 @@ class App extends Component {
   }
 
   async login() {}
+
   async signup() {}
 
-  logout() {
-    axios.get('/auth/logout');
-    this.setState({ loggedInUser: {} });
-  }
+  logout() {}
 
   render() {
     let { loggedInUser, email, password } = this.state;

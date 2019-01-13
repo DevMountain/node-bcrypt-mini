@@ -25,7 +25,7 @@ In this project we'll use a package called `bcrypt` to authenticate users. Bcryp
 
 ### Summary
 
-In this step, create your `/.env` file.
+In this step, create your `.env` file.
 
 ### Instructions
 
@@ -70,14 +70,14 @@ With our database connected, we're ready to start handling user authentication. 
 <summary><code> index.js </code></summary>
 
 ```js
-require('dotenv').config()
+require('dotenv').config();
 const express = require('express');
-const session = require('express-session')
-const bcrypt = require('bcryptjs')
-const massive = require('massive')
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const massive = require('massive');
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
 
 let { SERVER_PORT, CONNECTION_STRING, SECRET } = process.env;
 
@@ -134,17 +134,17 @@ In this step we'll create login functionality. Bcrypt is only one of many hashin
 ### Solution
 
 <details>
-<summary><code> .env </code></summary>
+<summary><code> index.js </code></summary>
 
 ```js
-require('dotenv').config()
+require('dotenv').config();
 const express = require('express');
-const session = require('express-session')
-const bcrypt = require('bcryptjs')
-const massive = require('massive')
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const massive = require('massive');
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
 
 let { SERVER_PORT, CONNECTION_STRING, SECRET } = process.env;
 
@@ -152,11 +152,11 @@ app.use(session({
   secret: SECRET,
   resave: false,
   saveUninitialized: false
-}))
+}));
 
 massive(CONNECTION_STRING).then(db => {
   app.set('db', db);
-})
+});
 
 app.post('/auth/signup', async (req, res) => {
   let { email, password } = req.body;
@@ -170,7 +170,7 @@ app.post('/auth/signup', async (req, res) => {
   let createdUser = await db.create_customer([email, hash])
   req.session.user = { id: createdUser[0].id, email: createdUser[0].email }
   res.status(200).send(req.session.user)
-})
+});
 
 app.post('/auth/login', async (req, res) => {
   let { email, password } = req.body;
@@ -186,11 +186,11 @@ app.post('/auth/login', async (req, res) => {
   } else {
     return res.status(401).send('Incorrect email/password')
   }
-})
+});
 
 app.listen(SERVER_PORT, () => {
   console.log(`Listening on port: ${SERVER_PORT}`)
-})
+});
 ```
 
 </details>
@@ -251,15 +251,201 @@ async login() {
 
 ### Summary
 
+Once a user is logged in, they need a way to logout. In this step, we'll add logout functionality, which is really just the user telling our app that we can close their session for now.
 
 ### Instructions
 
+* Open `server/index.js`
+* Add a `get` endpoint to `/auth/logout`
+* This endpoint should:
+  * Destroy the user's session.
+  * Send a status of 200.
 
 ### Solution
 
 <details>
-<summary><code> .env </code></summary>
+<summary><code> index.js </code></summary>
 
+```js
+require('dotenv').config();
+const express = require('express');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const massive = require('massive');
+
+const app = express();
+app.use(express.json());
+
+let { SERVER_PORT, CONNECTION_STRING, SECRET } = process.env;
+
+app.use(session({
+  secret: SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+massive(CONNECTION_STRING).then(db => {
+  app.set('db', db);
+});
+
+app.post('/auth/signup', async (req, res) => {
+  let { email, password } = req.body;
+  let db = req.app.get('db')
+  let userFound = await db.customer_check([email]);
+  if (userFound[0]) {
+    return res.status(200).send('Email already exists')
+  }
+  let salt = bcrypt.genSaltSync(10);
+  let hash = bcrypt.hashSync(password, salt);
+  let createdUser = await db.create_customer([email, hash])
+  req.session.user = { id: createdUser[0].id, email: createdUser[0].email }
+  res.status(200).send(req.session.user)
+});
+
+app.post('/auth/login', async (req, res) => {
+  let { email, password } = req.body;
+  let db = req.app.get('db')
+  let userFound = await db.customer_check([email])
+  if (!userFound[0]) {
+    return res.status(200).send('Incorrect email. Please try again.');
+  }
+  let result = bcrypt.compareSync(password, userFound[0].hash_value)
+  if (result) {
+    req.session.user = { id: userFound[0].id, email: userFound[0].email }
+    res.status(200).send(req.session.user)
+  } else {
+    return res.status(401).send('Incorrect email/password')
+  }
+});
+
+app.get('/auth/logout', (req, res) => {
+  req.session.destroy();
+  res.sendStatus(200);
+});
+
+app.listen(SERVER_PORT, () => {
+  console.log(`Listening on port: ${SERVER_PORT}`)
+});
+```
+
+</details>
+
+## Step 6
+
+### Summary
+
+In this step we'll write our logout functionality.
+
+### Instructions
+
+* Open `App.js`
+* Find the `logout` function
+* This function should:
+  * make a `get` request to `/auth/logout`.
+  * Set the `loggedInUser` on state back to an empty object.
+* You should now be able to sign a user up, login, and logout!
+
+### Solution
+<details>
+<summary><code> App.js </code></summary>
+
+```js
+logout() {
+  axios.get('/auth/logout');
+  this.setState({ loggedInUser: {} });
+}
+```
+
+</details>
+
+## Step 7
+
+### Summary
+
+One final piece of server code is needed to complete our authentication process. We need a way to check that our user is logged in and pull their information into our application if they are.
+
+### Instructions
+
+* Open `index.js`
+* Add a `get` enpoint to `/auth/user`
+* This endpoint should:
+  * Check if their is a user on session.
+  * If there is, send it up.
+  * If there isn't send an error.
+
+### Solution
+<details>
+<summary><code> index.js </code></summary>
+
+```js
+require('dotenv').config();
+const express = require('express');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const massive = require('massive');
+
+const app = express();
+app.use(express.json());
+
+let { SERVER_PORT, CONNECTION_STRING, SECRET } = process.env;
+
+app.use(session({
+  secret: SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+massive(CONNECTION_STRING).then(db => {
+  app.set('db', db);
+});
+
+app.post('/auth/signup', async (req, res) => {
+  let { email, password } = req.body;
+  let db = req.app.get('db')
+  let userFound = await db.customer_check([email]);
+  if (userFound[0]) {
+    return res.status(200).send('Email already exists')
+  }
+  let salt = bcrypt.genSaltSync(10);
+  let hash = bcrypt.hashSync(password, salt);
+  let createdUser = await db.create_customer([email, hash])
+  req.session.user = { id: createdUser[0].id, email: createdUser[0].email }
+  res.status(200).send(req.session.user)
+});
+
+app.post('/auth/login', async (req, res) => {
+  let { email, password } = req.body;
+  let db = req.app.get('db')
+  let userFound = await db.customer_check([email])
+  if (!userFound[0]) {
+    return res.status(200).send('Incorrect email. Please try again.');
+  }
+  let result = bcrypt.compareSync(password, userFound[0].hash_value)
+  if (result) {
+    req.session.user = { id: userFound[0].id, email: userFound[0].email }
+    res.status(200).send(req.session.user)
+  } else {
+    return res.status(401).send('Incorrect email/password')
+  }
+});
+
+app.get('/auth/logout', (req, res) => {
+  req.session.destroy();
+  res.sendStatus(200);
+});
+
+app.get('/api/user', (req, res) => {
+  if (req.session.user) {
+    res.status(200).send(req.session.user)
+  } else {
+    res.status(401).send('please log in')
+  }
+});
+
+app.listen(SERVER_PORT, () => {
+  console.log(`Listening on port: ${SERVER_PORT}`)
+});
+```
 
 </details>
 
