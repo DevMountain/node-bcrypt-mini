@@ -12,25 +12,54 @@ class App extends Component {
     };
   }
 
-  async login() {}
+  async login() {
+    let { email, password } = this.state;
+    try {
+      let res = await axios.post('/auth/login', {
+        email,
+        password
+      });
+      if (typeof res.data === 'string') alert(res.data);
+      this.setState({ loggedInUser: res.data, email: '', password: '' });
+    } catch (e) {
+      alert(e);
+    }
+  }
+  async signup() {
+    let { email, password } = this.state;
+    let res = await axios.post('/auth/signup', {
+      email: email,
+      password: password
+    });
+    if (typeof res.data === 'string') alert(res.data);
+    this.setState({ loggedInUser: res.data, email: '', password: '' });
+  }
 
-  async signup() {}
-
-  async logout() {}
+  async logout() {
+    axios.get('/auth/logout');
+    this.setState({ loggedInUser: {} });
+  }
 
   render() {
     let { loggedInUser, email, password } = this.state;
-
     return (
       <div className="App">
         <h2>Auth w/ Bcrypt</h2>
         <p>
           Email:
-          <input value={email} onChange={() => null} type="text" />
+          <input
+            value={email}
+            onChange={e => this.setState({ email: e.target.value })}
+            type="text"
+          />
         </p>
         <p>
           Password:
-          <input value={password} type="password" onChange={() => null} />
+          <input
+            value={password}
+            type="password"
+            onChange={e => this.setState({ password: e.target.value })}
+          />
         </p>
         <button onClick={() => this.login()}>Login</button>
         <button onClick={() => this.signup()}>Sign up</button>
@@ -39,10 +68,10 @@ class App extends Component {
 
         <h4>Status: {loggedInUser.email ? 'Logged In' : 'Logged Out'}</h4>
         <h4>User Data:</h4>
-        <p> {JSON.stringify(loggedInUser)} </p>
+        <p> {loggedInUser.email ? JSON.stringify(loggedInUser) : 'No User'} </p>
         <br />
         {loggedInUser.email ? (
-          <button onClick={() => null}>Logout</button>
+          <button onClick={() => this.logout()}>Logout</button>
         ) : null}
       </div>
     );
