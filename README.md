@@ -62,7 +62,7 @@ With our database connected, we're ready to start handling user authentication. 
         * `hash` and `salt` the password using bcrypts `genSaltSync` and `hashSync` methods
         * You can see how to use them <a href="https://www.npmjs.com/package/bcryptjs#usage---sync">here</a>.
         * Add the user's email and hashed password to the database using the `create_user` sql statement found in `db/`.
-        * Put the user object on session (excluding their hashed password) so we can reference them in other endpoints in our server and send the new users data back to the client.
+        * Put the user object on session (excluding their hashed password) so we can reference them in other endpoints in our server and send the new user's data back to the client.
 
 ### Solution
 
@@ -128,8 +128,8 @@ In this step we'll create login functionality. Bcrypt is only one of many hashin
 * If their email is in our database:
     * Use bcrypts `compareSync` method to compare the input password on `req.body` with the users `user_password`.
         * You can review use for `compareSync` <a href="https://www.npmjs.com/package/bcryptjs#usage---sync">here</a>.
-    * If the passwords match, then the user has successfully authenticated, put the user object on session (excluding their hashed password).
-* The user is now successfully `logged in` to your website!
+    * If the passwords match, then the user has successfully authenticated, put the user object on session (excluding their hashed password) and send it to the client.
+* The user can now `login` to your website!
 
 ### Solution
 
@@ -199,23 +199,57 @@ app.listen(SERVER_PORT, () => {
 
 ### Summary
 
-
+With the essential authentication functionality done, we'll write the matching frontend functions so a user can signup and login to our site.
 
 ### Instructions
 
+* Open `src/App.js`
+  * A few things to note:
+    * The functions we'll work with already exist, we're going to write the functionality.
+    * The inputs are already setup to update our `email` and `password` state items as we type into them.
+    * The buttons already have the function calls mapped to them.
+* Find the `signup` function on our App Component
+* This function should:
+  * Make a post request to `/auth/signup`.
+  * The body should be an object with our email and password from state assigned as properties on the object.
+  * When the response comes back, we should set the returned user on state and reset the username and password fields.
+* Take a look at your database to make sure the user was successfully added.
+  * Notice the format of the `user_password`. It looks nothing like what we typed in. That's a hashed value!
+
+* Next find the `login` function
+* This function will look identical to the `signup` function, except we'll be posting to the `/auth/login` endpoint instead of the signup endpoint.
+* It should make the post request, set the returned user on state, and reset the input fields.
 
 ### Solution
 
 <details>
-<summary><code> .env </code></summary>
+<summary><code> App.js </code></summary>
 
+```js
+async signup() {
+  let { email, password } = this.state;
+  let res = await axios.post('/auth/signup', {
+    email,
+    password
+  });
+  this.setState({ loggedInUser: res.data, email: '', password: '' });
+}
+
+async login() {
+  let { email, password } = this.state;
+  let res = await axios.post('/auth/login', {
+    email,
+    password
+  });
+  this.setState({ loggedInUser: res.data, email: '', password: '' });
+}
+```
 
 </details>
 
 ## Step 5
 
 ### Summary
-
 
 
 ### Instructions
