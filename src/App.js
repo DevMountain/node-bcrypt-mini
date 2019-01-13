@@ -21,26 +21,32 @@ class App extends Component {
   render() {
     let { loggedInUser, email, password } = this.state;
     return (
-      <div className="App">
-        <h2>Auth w/ Bcrypt</h2>
-        <p>
-          Email:
-          <input
-            value={email}
-            onChange={e => this.setState({ email: e.target.value })}
-            type="text"
-          />
-        </p>
-        <p>
-          Password:
-          <input
-            value={password}
-            type="password"
-            onChange={e => this.setState({ password: e.target.value })}
-          />
-        </p>
-        <button onClick={() => this.login()}>Login</button>
-        <button onClick={() => this.signup()}>Sign up</button>
+      <div className="form-container done">
+        <div className="login-form">
+          <h3>Auth w/ Bcrypt</h3>
+          <div>
+            <input
+              value={email}
+              onChange={e => this.setState({ email: e.target.value })}
+              type="text"
+              placeholder="Email"
+            />
+          </div>
+          <div>
+            <input
+              value={password}
+              type="password"
+              onChange={e => this.setState({ password: e.target.value })}
+              placeholder="password"
+            />
+          </div>
+          {loggedInUser.email ? (
+            <button onClick={() => this.logout()}>Logout</button>
+          ) : (
+            <button onClick={() => this.login()}>Login</button>
+          )}
+          <button onClick={() => this.signup()}>Sign up</button>
+        </div>
 
         <hr />
 
@@ -48,9 +54,6 @@ class App extends Component {
         <h4>User Data:</h4>
         <p> {loggedInUser.email ? JSON.stringify(loggedInUser) : 'No User'} </p>
         <br />
-        {loggedInUser.email ? (
-          <button onClick={() => this.logout()}>Logout</button>
-        ) : null}
       </div>
     );
   }
