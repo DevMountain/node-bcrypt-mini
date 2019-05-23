@@ -29,7 +29,7 @@ In this step, create your `.env` file.
 
 ### Instructions
 
-Create your `.env` file in the root of your directory. It should have three properties: `SESSION_SECRET` for your `express-session` middleware, `SERVER_PORT` for the port your server will run on, and `CONNECTION_STRING` which should be your database connection.
+Create your `.env` file in the root of your directory. It should have three properties: `SESSION_SECRET` for your `express-session` middleware, `SERVER_PORT` for the port your server will run on, and `CONNECTION_STRING` which should be your database connection. The proxy is looking for a `SERVER_PORT` on `3001`.
 
 ### Solution
 
@@ -434,7 +434,7 @@ app.get('/auth/logout', (req, res) => {
   res.sendStatus(200);
 });
 
-app.get('/api/user', (req, res) => {
+app.get('/auth/user', (req, res) => {
   if (req.session.user) {
     res.status(200).send(req.session.user)
   } else {
